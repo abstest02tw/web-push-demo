@@ -1,6 +1,5 @@
 const publicVapidKey = "YOUR_PUBLIC_VAPID_KEY";
 
-// Register the service worker and subscribe the user
 async function subscribeUser() {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
         console.log("Service Worker and Push are supported");
@@ -14,16 +13,27 @@ async function subscribeUser() {
         });
         console.log("Push subscription:", subscription);
 
-        // Send subscription to the server
-        await fetch('https://your-server-endpoint/subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(subscription)
-        });
-        alert("Subscribed successfully!");
+        // Generate and download subscription file
+        saveSubscriptionToFile(subscription);
     } else {
         alert("Push notifications are not supported in your browser.");
     }
+}
+
+function saveSubscriptionToFile(subscription) {
+    // Convert subscription object to JSON string
+    const subscriptionJSON = JSON.stringify(subscription, null, 2);
+
+    // Create a Blob with the JSON data
+    const blob = new Blob([subscriptionJSON], { type: 'application/json' });
+
+    // Create a download link
+    const downloadLink = document.getElementById('downloadLink');
+    downloadLink.href = URL.createObjectURL(blob);
+
+    // Show the download section
+    const downloadSection = document.getElementById('downloadSection');
+    downloadSection.style.display = 'block';
 }
 
 // Utility to convert VAPID key
@@ -40,4 +50,3 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 document.getElementById('subscribeBtn').addEventListener('click', subscribeUser);
-
