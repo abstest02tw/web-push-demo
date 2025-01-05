@@ -1,3 +1,5 @@
+navigator.serviceWorker.register('/sw.js?v=1.0');
+
 self.addEventListener('install', event => {
     console.log('Service Worker installing.');
 });
